@@ -15,7 +15,7 @@ class DownloadDados(object):
         """
         # carregando os dados no .env que serão usados
         load_dotenv()
-        BEARED_TOKEN = os.getenv("BEARER_TOKEN_TWITTER")
+        BEARED_TOKEN = os.getenv("BEARER_TOKEN")
         self.__headers = {"Authorization": "Bearer {}".format(BEARED_TOKEN)}
 
     def pesquisarTweet(self, termo=""):
