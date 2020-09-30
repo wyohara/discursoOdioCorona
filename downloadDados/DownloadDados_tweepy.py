@@ -19,11 +19,7 @@ class DownloadDados_tweepy(object):
 
     def realizar_pesquisa(self, query="", result_type="mixed", lang="pt", count=100):
         """
-        Método responsável por realizar a pesquisa no tweepy
-        :param query:
-        :param result_type:
-        :param lang:
-        :return:
+        Método responsável por realizar a pesquisa no tweepy por tweets
         """
 
         # criando a query para pesquisa no tweepy
@@ -41,6 +37,18 @@ class DownloadDados_tweepy(object):
             except tweepy.error.TweepError:  # caso ocorra algum erro no tweepy
                 print("[*] Falha ao executar o comando no tweepy, saindo...")
 
+    def get_retweet(self):
+        result = Database().buscar_todos_tweet()
+        for r in result:
+            try:
+                print(r["text"])
+                print('\n')
+            except Exception as e:
+                pass
+
 
 if __name__ == '__main__':
-    DownloadDados_tweepy().realizar_pesquisa('china OR sinovac (vacina OR covid OR corona OR pandemia OR sinovac)')
+    DownloadDados_tweepy().realizar_pesquisa(
+        'china OR chinês (vacina OR covid OR corona OR pandemia OR sinovac)')
+
+    # DownloadDados_tweepy().get_retweet()
