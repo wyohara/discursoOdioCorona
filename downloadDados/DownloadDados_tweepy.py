@@ -5,6 +5,7 @@ import os
 import time
 from database.Database import Database
 
+
 class DownloadDados_tweepy(object):
     def __init__(self):
         load_dotenv()
@@ -16,7 +17,7 @@ class DownloadDados_tweepy(object):
         # self.__api = tweepy.API(auth, parser=tweepy.parsers.JSONParser()) # converte em json
         self.__api = tweepy.API(auth)
 
-    def realizar_pesquisa(self, query="", result_type="popular", lang="pt", count=100):
+    def realizar_pesquisa(self, query="", result_type="mixed", lang="pt", count=100):
         """
         Método responsável por realizar a pesquisa no tweepy
         :param query:
@@ -24,26 +25,22 @@ class DownloadDados_tweepy(object):
         :param lang:
         :return:
         """
+
+        # criando a query para pesquisa no tweepy
         public_tweets = self.__api.search(query,
                                           lang=lang,
                                           result_type=result_type,
                                           count=count)
-        # #formatando para string
-        # result_formatted = json.dumps(public_tweets, indent=4, sort_keys=True)
-        # print(json.loads(result_formatted.encode('UTF-8')))
-
-        print('map result')
+        # percorrendo os resultados
         for tweet in public_tweets:
-            try:
-                print(tweet._json)
+            try:  # tenta salvar os dados
                 Database().salvar_tweets_discurso_odio(tweet._json)
-                break
-            except tweepy.RateLimitError:
-                print('sleep 1 minute')
+            except tweepy.RateLimitError:  # caso o limite de consultas tenha sido alcançado
+                print('[*] Pausando o tweepy por 1 minuto')
                 time.sleep(60)
-            except tweepy.error.TweepError:
-                print("Failed to run the command on that user, Skipping...")
+            except tweepy.error.TweepError:  # caso ocorra algum erro no tweepy
+                print("[*] Falha ao executar o comando no tweepy, saindo...")
 
 
 if __name__ == '__main__':
-    DownloadDados_tweepy().realizar_pesquisa('china(covid OR corona)', count=100)
+    DownloadDados_tweepy().realizar_pesquisa('china OR sinovac (vacina OR covid OR corona OR pandemia OR sinovac)')
